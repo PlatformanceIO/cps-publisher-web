@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import RetoolIframe from '@/components/Retool';
 import Navbar from '@/components/Navbar';
@@ -16,22 +16,25 @@ export default async function Home() {
   if (!userAccess.some((elem) => elem.title === 'cps-publisher')) {
     redirect('/not-authorized');
   }
+  const { getToken } = await auth();
 
-  // const email = user?.emailAddresses[0]?.emailAddress;
-  // console.log('email', email);
-  // const checkEmailResponse = await fetch(
-  //   `${process.env.CORE_API_URL}/v1/users/check?email=${email}`
-  // );
+  const token = await getToken({ template: 'default' });
 
-  // console.log(checkEmailResponse);
+  let response = await fetch(`${process.env.CORE_API_URL}/v1/auth/activate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token,
+    }),
+  });
 
-  // const checkEmailResponseJson = await checkEmailResponse.json();
-  // if (!checkEmailResponseJson.success) {
-  //   console.log('Inside Success');
-  //   redirect('/not-authorized');
-  // }
+  let responseJson = await response.json();
 
-  const response = await fetch(
+  const data: { accessToken: string } = responseJson?.data?.token;
+
+  response = await fetch(
     `https://portal.app.platformance.io/api/embed-url/external-user`,
     {
       method: 'POST',
@@ -52,14 +55,14 @@ export default async function Home() {
       }),
     }
   );
-  const responseJson = await response.json();
+  responseJson = await response.json();
 
   const embedUrl = responseJson.embedUrl;
 
   return (
     <div>
       <Navbar />
-      <RetoolIframe url={embedUrl} />
+      <RetoolIframe url={embedUrl} data={data} />
     </div>
   );
 }
