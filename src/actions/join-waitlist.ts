@@ -9,6 +9,7 @@ const joinWaitlistSchema = z.object({
 interface WaitlistMessages {
   errors?: {
     email?: string[];
+    _form?: string[];
   };
   data?: {
     success?: boolean;
@@ -47,7 +48,12 @@ export async function joinWaitlist(
       }
     );
     if (!response.ok) {
-      throw new Error('Failed to fetch tasks');
+      const error = await response.json();
+      return {
+        errors: {
+          _form: [error.message],
+        },
+      };
     }
 
     return { data: { success: true } };
