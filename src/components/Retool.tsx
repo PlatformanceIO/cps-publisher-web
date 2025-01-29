@@ -5,9 +5,13 @@ import Retool from 'react-retool';
 
 interface RetoolProps {
   url: string;
+  data: {
+    accessToken: string;
+  };
 }
 
-const RetoolIframe = ({ url }: RetoolProps) => {
+const RetoolIframe = ({ url, data }: RetoolProps) => {
+  console.log(data);
   const { setTheme } = useTheme();
   useEffect(() => {
     window.addEventListener('message', (event) => {
@@ -27,7 +31,7 @@ const RetoolIframe = ({ url }: RetoolProps) => {
 
   return (
     <div className='h-[calc(100vh-50px)]'>
-      <Retool url={url} />
+      <Retool url={url} data={{ accessToken: data.accessToken }} />
     </div>
   );
 };
