@@ -31,6 +31,9 @@ export default async function Home() {
     }),
   });
 
+  console.log('HERE');
+  console.log({ response });
+
   let responseJson = await response.json();
 
   console.log({ responseJson });
