@@ -19,7 +19,6 @@ export default async function Home() {
   const { getToken } = await auth();
 
   const token = await getToken({ template: 'default' });
-  console.log({ token });
 
   let response = await fetch(`${process.env.CORE_API_URL}/v1/auth/activate`, {
     method: 'POST',
@@ -31,16 +30,9 @@ export default async function Home() {
     }),
   });
 
-  console.log('HERE');
-  console.log({ response });
-
   let responseJson = await response.json();
 
-  console.log({ responseJson });
-
   const data: { accessToken: string } = responseJson?.data?.token;
-
-  console.log({ data });
 
   response = await fetch(
     `https://portal.app.platformance.io/api/embed-url/external-user`,
@@ -64,8 +56,6 @@ export default async function Home() {
     }
   );
   responseJson = await response.json();
-
-  console.log({ responseJson });
 
   const embedUrl = responseJson.embedUrl;
 
