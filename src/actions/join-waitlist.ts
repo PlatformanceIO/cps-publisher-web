@@ -42,6 +42,7 @@ export async function joinWaitlist(
         },
         body: JSON.stringify({
           email,
+          product: 'cps-publisher',
         }),
       }
     );
