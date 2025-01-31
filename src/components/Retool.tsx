@@ -11,6 +11,7 @@ interface RetoolProps {
 }
 
 const RetoolIframe = ({ url, data }: RetoolProps) => {
+  console.log({ data });
   const { setTheme } = useTheme();
   useEffect(() => {
     window.addEventListener('message', (event) => {
